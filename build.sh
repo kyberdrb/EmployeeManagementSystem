@@ -29,10 +29,11 @@ echo "==========================================="
 echo "             EXECUTABLE OUTPUT"
 echo "==========================================="
 
-"${BUILD_DIR_FULL_PATH}/${EXECUTABLE_NAME}"
+EXECUTABLE_FULL_PATH="${BUILD_DIR_FULL_PATH}/bin/${EXECUTABLE_NAME}"
+"${EXECUTABLE_FULL_PATH}" # the intermediary directory 'bin' came from the CMake option 'CMAKE_RUNTIME_OUTPUT_DIRECTORY'
 
 echo "==========================================="
 echo "             MEMCHECK (mêmčëk)"
 echo "==========================================="
 
-valgrind --show-error-list=yes --leak-check=full --show-leak-kinds=all "${BUILD_DIR_FULL_PATH}/${EXECUTABLE_NAME}"
+valgrind --show-error-list=yes --leak-check=full --show-leak-kinds=all "${EXECUTABLE_FULL_PATH}"
