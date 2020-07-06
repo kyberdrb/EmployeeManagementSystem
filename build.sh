@@ -24,6 +24,8 @@ cmake -DPROJECT_NAME=${EXECUTABLE_NAME} -S "$PROJECT_FULL_PATH" -B "$BUILD_DIR_F
 #cmake -DPROJECT_NAME=${EXECUTABLE_NAME} "-DCMAKE_CXX_CLANG_TIDY=/usr/bin/clang-tidy;-checks=*;-header-filter=.*" -S "$PROJECT_FULL_PATH" -B "$BUILD_DIR_FULL_PATH"
 
 cmake --build "${BUILD_DIR_FULL_PATH}" --target ${EXECUTABLE_NAME} # 'Build a Project'
+cmake --build "${BUILD_DIR_FULL_PATH}" --target ${EXECUTABLE_NAME}_library # 'Build a library for the Project'
+cmake --build "${BUILD_DIR_FULL_PATH}" --target unit_tests # 'Build a library for the Project'
 
 echo "==========================================="
 echo "             EXECUTABLE OUTPUT"

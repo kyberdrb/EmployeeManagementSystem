@@ -27,13 +27,3 @@ add_subdirectory(app)
 
 enable_testing()
 add_subdirectory(tests)
-
-file(GLOB_RECURSE source_files
-    "app/src/*.h"
-    "app/src/*.cpp"
-
-    "app/client/*.h"
-    "app/client/*.cpp"
-)
-
-add_executable(${PROJECT_NAME} ${source_files})
