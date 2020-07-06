@@ -19,8 +19,11 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 
 file(GLOB_RECURSE source_files
-    "src/*.h"
-    "src/*.cpp"
+    "app/src/*.h"
+    "app/src/*.cpp"
+
+    "app/client/*.h"
+    "app/client/*.cpp"
 )
 
-add_executable(${PROJECT_NAME} src/client/main.cpp ${source_files})
+add_executable(${PROJECT_NAME} ${source_files})

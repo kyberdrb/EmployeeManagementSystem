@@ -1,13 +1,13 @@
 // Lexicographic order of include statements
 // - see https://llvm.org/docs/CodingStandards.html#include-style
-#include "../project/Employee.h"
-#include "../project/EmployeeDAO.h"
-#include "../project/EmployeeDatabase.h"
-#include "../project/EntryGenerator.h"
-#include "../project/EmployeeMissingInDatabase.h"
-#include "../project/ID_Pool.h"
-#include "../project/NoIDs_InID_Pool.h"
-#include "../project/TerminalScreen.h"
+#include "../src/Employee.h"
+#include "../src/EmployeeDAO.h"
+#include "../src/EmployeeDatabase.h"
+#include "../src/EntryGenerator.h"
+#include "../src/EmployeeMissingInDatabase.h"
+#include "../src/ID_Pool.h"
+#include "../src/NoIDs_InID_Pool.h"
+#include "../src/TerminalScreen.h"
 
 #include <sstream>
 
