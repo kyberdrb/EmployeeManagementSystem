@@ -39,3 +39,9 @@ echo "             MEMCHECK (mêmčëk)"
 echo "==========================================="
 
 valgrind --show-error-list=yes --leak-check=full --show-leak-kinds=all "${EXECUTABLE_FULL_PATH}"
+
+echo "==========================================="
+echo "             UNIT-TESTS OUTPUT"
+echo "==========================================="
+
+./build/bin/unit_tests
