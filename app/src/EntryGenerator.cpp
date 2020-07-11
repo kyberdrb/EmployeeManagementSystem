@@ -27,3 +27,13 @@ void EntryGenerator::fillDatabaseThroughDAO(TerminalScreen& screen, EmployeeDAO&
     employeeDAO.saveEmployeeToDatabase(std::move(e1));
     employeeDAO.saveEmployeeToDatabase(std::move(e2));
 }
+
+void EntryGenerator::fillDatabaseThroughDAO(EmployeeDAO& employeeDAO) {
+    auto e1 = std::make_unique<Employee>();
+    auto e2 = std::make_unique<Employee>("Jack Smith", "common good", true);
+
+    // static_cast<void>(employeeDAO);
+
+    employeeDAO.saveEmployeeToDatabase(std::move(e1));
+    employeeDAO.saveEmployeeToDatabase(std::move(e2));
+}

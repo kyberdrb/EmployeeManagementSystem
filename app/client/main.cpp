@@ -16,7 +16,8 @@ int main() {
     EmployeeDAO employeeDAO(db);
     TerminalScreen screen;
     EntryGenerator entryGenerator;
-    entryGenerator.fillDatabaseThroughDAO(screen, employeeDAO);
+    // entryGenerator.fillDatabaseThroughDAO(screen, employeeDAO);
+    entryGenerator.fillDatabaseThroughDAO(employeeDAO);
 
     screen.displayOnTerminal(employeeDAO.getAllEmployeesAsText());
 
@@ -41,9 +42,6 @@ int main() {
         screen.displayOnTerminal(idPool.getEntirePoolAsText());
         screen.printNewLine();
 
-        screen.displayOnTerminal(idPool.getEntirePoolAsText());
-        screen.printNewLine();
-
         std::unique_ptr<ID> anotherBorrowedID;
         try {
             anotherBorrowedID = idPool.borrowID();
@@ -51,6 +49,9 @@ int main() {
             screen.displayOnTerminal(exc.what());
             screen.printNewLine();
         }
+
+        screen.displayOnTerminal(idPool.getEntirePoolAsText());
+        screen.printNewLine();
 
         idPool.giveBackID(std::move(borrowedID));
 

@@ -93,19 +93,19 @@ ID_Pool& ID_Pool::getInstance() {
 }
 
 ID_Pool::ID_Pool() :
-        lastGeneratedNumber(0),
-        numberOfRegenerations(0),
+        nextGeneratedNumber(0),
         poolOfIDs()
 {
     this->regeneratePool();
 }
 
 void ID_Pool::regeneratePool() {
-    this->numberOfRegenerations++;
-
-    for (int64_t idNumber = 0; idNumber < this->INITIAL_POOL_CAPACITY; ++idNumber) {
+    for (   int64_t idNumber = this->nextGeneratedNumber;
+            idNumber < this->nextGeneratedNumber + this->INITIAL_POOL_CAPACITY;
+            ++idNumber) {
         auto id = std::make_unique<ID>(idNumber);
         this->poolOfIDs.push_back(std::move(id));
-        this->lastGeneratedNumber = idNumber;
     }
+
+    this->nextGeneratedNumber += this->INITIAL_POOL_CAPACITY;
 }

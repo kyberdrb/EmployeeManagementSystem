@@ -40,8 +40,18 @@ echo "==========================================="
 
 valgrind --show-error-list=yes --leak-check=full --show-leak-kinds=all "${EXECUTABLE_FULL_PATH}"
 
+echo
+read -rsn1 -p"Press any key to continue with unit tests... [Ctrl+C to abort]"
+echo
+
+# echo "==========================================="
+# echo "             UNIT-TESTS OUTPUT"
+# echo "==========================================="
+#
+# ./build/bin/unit_tests
+
 echo "==========================================="
-echo "             UNIT-TESTS OUTPUT"
+echo "        UNIT-TESTS OUTPUT + MEMCHECK"
 echo "==========================================="
 
-./build/bin/unit_tests
+valgrind --show-error-list=yes --leak-check=full --show-leak-kinds=all "./build/bin/unit_tests"
