@@ -2,11 +2,9 @@
 
 #include "gtest/gtest.h"
 
-class SomeUnitTest : public ::testing::Test {};
+class EmployeeManagementSystemTests : public ::testing::Test {};
 
-TEST_F(SomeUnitTest, test_foo_differs_from_bar) {
-    // EXPECT_EQ("bar", "bar");
-
+TEST_F(EmployeeManagementSystemTests, test_client) {
     auto& db = EmployeeDatabase::getInstance();
     ASSERT_NE(&db, nullptr);
 }
