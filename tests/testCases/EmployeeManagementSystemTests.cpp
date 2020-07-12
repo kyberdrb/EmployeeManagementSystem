@@ -5,14 +5,20 @@
 #include "../../app/src/EmployeeMissingInDatabase.h"
 #include "../../app/src/ID_Pool.h"
 #include "../../app/src/NoIDs_InID_Pool.h"
-#include "../../app/src/TerminalScreen.h"
 
 #include "gtest/gtest.h"
 
 class EmployeeManagementSystemTests : public ::testing::Test {
 protected:
+    std::unique_ptr<EmployeeDAO> employeeDAO;
+
+    EmployeeManagementSystemTests() : employeeDAO(nullptr) {}
+
     void SetUp() override {
-        
+        auto& db = EmployeeDatabase::getInstance();
+        this->employeeDAO = std::make_unique<EmployeeDAO>(db);
+        EntryGenerator entryGenerator;
+        entryGenerator.fillDatabaseThroughDAO(*(this->employeeDAO));
     }
 
     void TearDown() override {
@@ -21,20 +27,8 @@ protected:
 };
 
 TEST_F(EmployeeManagementSystemTests, test_client) {
-    ASSERT_NE("test", "client");
-
-    auto& db = EmployeeDatabase::getInstance();
-    EmployeeDAO employeeDAO(db);
-    TerminalScreen screen;
-    EntryGenerator entryGenerator;
-    // entryGenerator.fillDatabaseThroughDAO(screen, employeeDAO);
-    entryGenerator.fillDatabaseThroughDAO(employeeDAO);
-
-    screen.displayOnTerminal(employeeDAO.getAllEmployeesAsText());
-
-    screen.printNewLine();
-    screen.displayOnTerminal("---");
-    screen.printNewLine();
+    // #ASSERT_EQ()
+    this->employeeDAO->getAllEmployeesAsText();
 
     {
         ID_Pool& idPool = ID_Pool::getInstance(); // we can access to the singleton
@@ -42,125 +36,145 @@ TEST_F(EmployeeManagementSystemTests, test_client) {
                                                   // or by reference, calling the 'getInstance' function only once
                                                   //  and then using the reference
 
-        screen.displayOnTerminal(idPool.getEntirePoolAsText());
-        screen.printNewLine();
+        // #ASSERT_EQ()
+        idPool.getEntirePoolAsText();
 
-        screen.displayOnTerminal(idPool.getEntirePoolAsText());
-        screen.printNewLine();
+
+        // #ASSERT_EQ()
+		idPool.getEntirePoolAsText();
+
 
         auto borrowedID = idPool.borrowID();
 
-        screen.displayOnTerminal(idPool.getEntirePoolAsText());
-        screen.printNewLine();
+        // #ASSERT_EQ()
+		idPool.getEntirePoolAsText();
+
 
         std::unique_ptr<ID> anotherBorrowedID;
         try {
             anotherBorrowedID = idPool.borrowID();
         } catch (const NoIDs_InID_Pool& exc) {
-            screen.displayOnTerminal(exc.what());
-            screen.printNewLine();
+            // #ASSERT_EQ()
+            exc.what();
         }
 
-        screen.displayOnTerminal(idPool.getEntirePoolAsText());
-        screen.printNewLine();
+        // #ASSERT_EQ()
+		idPool.getEntirePoolAsText();
+
 
         idPool.giveBackID(std::move(borrowedID));
 
-        screen.displayOnTerminal(idPool.getEntirePoolAsText());
-        screen.printNewLine();
+        // #ASSERT_EQ()
+		idPool.getEntirePoolAsText();
 
-        screen.displayOnTerminal(idPool.getEntirePoolAsText());
-        screen.printNewLine();
+
+        // #ASSERT_EQ()
+		idPool.getEntirePoolAsText();
+
 
         idPool.giveBackID(std::move(anotherBorrowedID));
 
-        screen.displayOnTerminal(idPool.getEntirePoolAsText());
-        screen.printNewLine();
+        // #ASSERT_EQ()
+		idPool.getEntirePoolAsText();
 
-        screen.displayOnTerminal(idPool.getEntirePoolAsText());
-        screen.printNewLine();
+
+        // #ASSERT_EQ()
+		idPool.getEntirePoolAsText();
+
     }
 
-    screen.printNewLine();
-    screen.displayOnTerminal("---");
-    screen.printNewLine();
 
-    screen.displayOnTerminal(ID_Pool::getInstance().getEntirePoolAsText());
-    screen.printNewLine();
+    // #ASSERT_EQ()
+	ID_Pool::getInstance().getEntirePoolAsText();
+
 
     {
         auto id = std::make_unique<ID>(0);
-        screen.displayOnTerminal(employeeDAO.getEmployeeByID(std::move(id)));
-        screen.printNewLine();
+        // #ASSERT_EQ()
+		this->employeeDAO->getEmployeeByID(std::move(id));
+
     }
 
-    screen.displayOnTerminal(ID_Pool::getInstance().getEntirePoolAsText());
-    screen.printNewLine();
+    // #ASSERT_EQ()
+		ID_Pool::getInstance().getEntirePoolAsText();
+
 
     {
         auto id = std::make_unique<ID>(1);
-        screen.displayOnTerminal(employeeDAO.getEmployeeByID(std::move(id)));
-        screen.printNewLine();
+        // #ASSERT_EQ()
+		this->employeeDAO->getEmployeeByID(std::move(id));
+
     }
 
-    screen.displayOnTerminal(ID_Pool::getInstance().getEntirePoolAsText());
-    screen.printNewLine();
+    // #ASSERT_EQ()
+	ID_Pool::getInstance().getEntirePoolAsText();
+
 
     {
         try {
             auto id = std::make_unique<ID>(20);
-            screen.displayOnTerminal(employeeDAO.getEmployeeByID(std::move(id)));
+            // #ASSERT_EQ()
+            this->employeeDAO->getEmployeeByID(std::move(id));
         } catch (const EmployeeMissingInDatabase& exc) {
             std::stringstream failureMessage;
             failureMessage <<  "Failure at printing the employee with 'id=" << exc.what() << "'" ;
-            screen.displayOnTerminal(failureMessage.str());
+            // #ASSERT_EQ()
+            failureMessage.str();
         }
-        screen.printNewLine();
+
     }
 
-    screen.displayOnTerminal(ID_Pool::getInstance().getEntirePoolAsText());
-    screen.printNewLine();
+    // #ASSERT_EQ()
+		ID_Pool::getInstance().getEntirePoolAsText();
 
-    screen.displayOnTerminal(employeeDAO.getAllEmployeesAsText());
-    screen.printNewLine();
+
+    // #ASSERT_EQ()
+		this->employeeDAO->getAllEmployeesAsText();
+
 
     {
         auto id = std::make_unique<ID>(1);
-        employeeDAO.terminateEmployee(std::move(id));
+        this->employeeDAO->terminateEmployee(std::move(id));
     }
 
-    screen.displayOnTerminal(ID_Pool::getInstance().getEntirePoolAsText());
-    screen.printNewLine();
+    // #ASSERT_EQ()
+	ID_Pool::getInstance().getEntirePoolAsText();
 
-    screen.displayOnTerminal(employeeDAO.getAllEmployeesAsText());
-    screen.printNewLine();
+
+    // #ASSERT_EQ()
+	this->employeeDAO->getAllEmployeesAsText();
+
 
     {
         auto id = std::make_unique<ID>(0);
-        employeeDAO.terminateEmployee(std::move(id));
+        this->employeeDAO->terminateEmployee(std::move(id));
     }
 
-    screen.displayOnTerminal(ID_Pool::getInstance().getEntirePoolAsText());
-    screen.printNewLine();
+    // #ASSERT_EQ()
+	ID_Pool::getInstance().getEntirePoolAsText();
 
-    screen.displayOnTerminal(employeeDAO.getAllEmployeesAsText());
-    screen.printNewLine();
+
+    // #ASSERT_EQ()
+	this->employeeDAO->getAllEmployeesAsText();
+
 
     {
         try {
             auto id = std::make_unique<ID>(30);
-            employeeDAO.terminateEmployee(std::move(id));
+            this->employeeDAO->terminateEmployee(std::move(id));
         } catch (const EmployeeMissingInDatabase& exc) { // if I wouldn't wrap the 'terminateEmployee' function call in a try block and catch the exception and only executed the body of the try block without catching the exception from 'terminateEmployee' function, the program would leak memory - and I don't want that. I want from my programs to clean up all memory they use because I want to write programs that would stabily run for as long as possible.
             std::stringstream failureMessage;
             failureMessage << "Employee with 'id=" << exc.what() << "'" << " is missing in database";
-            screen.displayOnTerminal(failureMessage.str());
-            screen.printNewLine();
+            // #ASSERT_EQ()
+            failureMessage.str();
         }
     }
 
-    screen.displayOnTerminal(ID_Pool::getInstance().getEntirePoolAsText());
-    screen.printNewLine();
+    // #ASSERT_EQ()
+	ID_Pool::getInstance().getEntirePoolAsText();
 
-    screen.displayOnTerminal(employeeDAO.getAllEmployeesAsText());
-    screen.printNewLine();
+
+    // #ASSERT_EQ()
+	this->employeeDAO->getAllEmployeesAsText();
+
 }

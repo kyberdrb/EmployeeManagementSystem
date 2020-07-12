@@ -2,9 +2,12 @@
 
 clear
 
+BUILD_OPTION=$1
+
 SCRIPT_FULL_PATH=$(realpath "$0")
 PROJECT_FULL_PATH=$(dirname "$SCRIPT_FULL_PATH")
 
+# clean()
 # remove core dumps from Valgrind
 rm $PROJECT_FULL_PATH/vgcore.*
 
@@ -15,43 +18,49 @@ mkdir -p "$BUILD_DIR_FULL_PATH"
 
 EXECUTABLE_NAME=$(basename "$PROJECT_FULL_PATH")
 
-# With g++
-#g++ -ggdb -o "${BUILD_DIR_FULL_PATH}/${EXECUTABLE_NAME}" "${PROJECT_FULL_PATH}/main.cpp" "${PROJECT_FULL_PATH}/src/Employee.cpp"
+# prepareBuild()
+# g++ only
+#g++ -ggdb -o "${BUILD_DIR_FULL_PATH}/${EXECUTABLE_NAME}" "${PROJECT_FULL_PATH}/main.cpp" "${PROJECT_FULL_PATH}/src/SourceFile.cpp" # ... and other headers and source files
 
+# CMake only
 cmake -DPROJECT_NAME=${EXECUTABLE_NAME} -S "$PROJECT_FULL_PATH" -B "$BUILD_DIR_FULL_PATH" # 'Generate a Project Buildsystem', i.e. initialize CMake project; this generates CMakeCache.txt file which is necessary for the 'cmake --build' command, otherwise the cmake compilation will fail
                                                                                           # - also the name of the executable in this script is passed to the cmake as the name of the project which in turn produces the executable with the same name, reducing the need for manually editing the CMakeLists.txt and automatizing and generalizing the building process for any cmake project
+
 # CMake with clang-tidy - static analysis for inspiration and safety
-#cmake -DPROJECT_NAME=${EXECUTABLE_NAME} "-DCMAKE_CXX_CLANG_TIDY=/usr/bin/clang-tidy;-checks=*;-header-filter=.*" -S "$PROJECT_FULL_PATH" -B "$BUILD_DIR_FULL_PATH"
+# cmake -DPROJECT_NAME=${EXECUTABLE_NAME} "-DCMAKE_CXX_CLANG_TIDY=/usr/bin/clang-tidy;-checks=*;-header-filter=.*" -S "$PROJECT_FULL_PATH" -B "$BUILD_DIR_FULL_PATH"
 
-cmake --build "${BUILD_DIR_FULL_PATH}" --target ${EXECUTABLE_NAME} # 'Build a Project'
-cmake --build "${BUILD_DIR_FULL_PATH}" --target ${EXECUTABLE_NAME}_library # 'Build a library for the Project'
-cmake --build "${BUILD_DIR_FULL_PATH}" --target unit_tests # 'Build a library for the Project'
+PROJECT_OPTION="project"
+if [[ "${BUILD_OPTION}" == "${PROJECT_OPTION}" ]]; then
+    # buildProject()
+    cmake --build "${BUILD_DIR_FULL_PATH}" --target ${EXECUTABLE_NAME} # 'Build a Project'
 
-echo "==========================================="
-echo "             EXECUTABLE OUTPUT"
-echo "==========================================="
+    # runProject()
+    echo "==========================================="
+    echo "             EXECUTABLE OUTPUT"
+    echo "==========================================="
 
-EXECUTABLE_FULL_PATH="${BUILD_DIR_FULL_PATH}/bin/${EXECUTABLE_NAME}"
-"${EXECUTABLE_FULL_PATH}" # the intermediary directory 'bin' came from the CMake option 'CMAKE_RUNTIME_OUTPUT_DIRECTORY'
 
-echo "==========================================="
-echo "             MEMCHECK (mêmčëk)"
-echo "==========================================="
+    EXECUTABLE_FULL_PATH="${BUILD_DIR_FULL_PATH}/bin/${EXECUTABLE_NAME}"
+    "${EXECUTABLE_FULL_PATH}" # the intermediary directory 'bin' came from the CMake option 'CMAKE_RUNTIME_OUTPUT_DIRECTORY'
 
-valgrind --show-error-list=yes --leak-check=full --show-leak-kinds=all "${EXECUTABLE_FULL_PATH}"
+    # analyzeProjectsRuntime()
+    echo "==========================================="
+    echo "             MEMCHECK (mêmčëk)"
+    echo "==========================================="
 
-echo
-read -rsn1 -p"Press any key to continue with unit tests... [Ctrl+C to abort]"
-echo
+    valgrind --show-error-list=yes --leak-check=full --show-leak-kinds=all "${EXECUTABLE_FULL_PATH}"
+fi
 
-# echo "==========================================="
-# echo "             UNIT-TESTS OUTPUT"
-# echo "==========================================="
-#
-# ./build/bin/unit_tests
+TEST_OPTION="test"
+if [[ "${BUILD_OPTION}" == "${TEST_OPTION}" ]]; then
+    # buildUnitTests()
+    cmake --build "${BUILD_DIR_FULL_PATH}" --target ${EXECUTABLE_NAME}_library # 'Build a library for the Project' - not necessary to be explicitely built - just for expressiveness
+    cmake --build "${BUILD_DIR_FULL_PATH}" --target unit_tests # 'Build a library for the Project'
 
-echo "==========================================="
-echo "        UNIT-TESTS OUTPUT + MEMCHECK"
-echo "==========================================="
+    # analyzeUnitTestsRuntime()
+    echo "==========================================="
+    echo "        UNIT-TESTS OUTPUT + MEMCHECK"
+    echo "==========================================="
 
-valgrind --show-error-list=yes --leak-check=full --show-leak-kinds=all "./build/bin/unit_tests"
+    valgrind --show-error-list=yes --leak-check=full --show-leak-kinds=all "./build/bin/unit_tests"
+fi
