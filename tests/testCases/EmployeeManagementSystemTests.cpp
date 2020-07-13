@@ -11,6 +11,7 @@
 class EmployeeManagementSystemTests : public ::testing::Test {
 protected:
     std::unique_ptr<EmployeeDAO> employeeDAO;
+    ID_Pool& idPool = ID_Pool::getInstance();
 
     EmployeeManagementSystemTests() : employeeDAO(nullptr) {}
 
@@ -20,10 +21,6 @@ protected:
         EntryGenerator entryGenerator;
         entryGenerator.fillDatabaseThroughDAO(*(this->employeeDAO));
     }
-
-    void TearDown() override {
-
-    }
 };
 
 TEST_F(EmployeeManagementSystemTests, test_client) {
@@ -31,13 +28,14 @@ TEST_F(EmployeeManagementSystemTests, test_client) {
     this->employeeDAO->getAllEmployeesAsText();
 
     {
-        ID_Pool& idPool = ID_Pool::getInstance(); // we can access to the singleton
+        //ID_Pool& idPool = ID_Pool::getInstance(); // we can access to the singleton
                                                   // either directly using the static method 'ID_Pool::getInstance' each time
                                                   // or by reference, calling the 'getInstance' function only once
                                                   //  and then using the reference
 
         // #ASSERT_EQ()
-        idPool.getEntirePoolAsText();
+        // std::string expected = "2;";
+        // ASSERT_EQ(expected, idPool.getEntirePoolAsText());
 
 
         // #ASSERT_EQ()
@@ -96,7 +94,7 @@ TEST_F(EmployeeManagementSystemTests, test_client) {
     }
 
     // #ASSERT_EQ()
-		ID_Pool::getInstance().getEntirePoolAsText();
+	ID_Pool::getInstance().getEntirePoolAsText();
 
 
     {
@@ -125,11 +123,11 @@ TEST_F(EmployeeManagementSystemTests, test_client) {
     }
 
     // #ASSERT_EQ()
-		ID_Pool::getInstance().getEntirePoolAsText();
+	ID_Pool::getInstance().getEntirePoolAsText();
 
 
     // #ASSERT_EQ()
-		this->employeeDAO->getAllEmployeesAsText();
+	this->employeeDAO->getAllEmployeesAsText();
 
 
     {
@@ -177,4 +175,9 @@ TEST_F(EmployeeManagementSystemTests, test_client) {
     // #ASSERT_EQ()
 	this->employeeDAO->getAllEmployeesAsText();
 
+}
+
+TEST_F(EmployeeManagementSystemTests, test_something_else) {
+    std::string expected = "foo";
+    ASSERT_EQ(expected, "foo");
 }
