@@ -24,22 +24,8 @@ protected:
 };
 
 TEST_F(EmployeeManagementSystemTests, test_client) {
-    // #ASSERT_EQ()
-    this->employeeDAO->getAllEmployeesAsText();
-
     {
-        //ID_Pool& idPool = ID_Pool::getInstance(); // we can access to the singleton
-                                                  // either directly using the static method 'ID_Pool::getInstance' each time
-                                                  // or by reference, calling the 'getInstance' function only once
-                                                  //  and then using the reference
-
-        // #ASSERT_EQ()
-        // std::string expected = "2;";
-        // ASSERT_EQ(expected, idPool.getEntirePoolAsText());
-
-
-        // #ASSERT_EQ()
-		idPool.getEntirePoolAsText();
+        ASSERT_EQ("2", this->idPool.getEntirePoolAsText());
 
 
         auto borrowedID = idPool.borrowID();
@@ -178,6 +164,7 @@ TEST_F(EmployeeManagementSystemTests, test_client) {
 }
 
 TEST_F(EmployeeManagementSystemTests, test_something_else) {
-    std::string expected = "foo";
-    ASSERT_EQ(expected, "foo");
+    ASSERT_EQ(  "0;John Doe;free;1\n"
+                "1;Jack Smith;common good;1",
+                this->employeeDAO->getAllEmployeesAsText());
 }

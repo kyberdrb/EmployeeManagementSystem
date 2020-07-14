@@ -13,6 +13,10 @@
 ---
 
 - https://raymii.org/s/tutorials/Cpp_project_setup_with_cmake_and_unit_tests.html
+- https://github.com/kyberdrb/gtest_example/commits/master?before=b69c74eb0dbdccf5ba8d221a408db8afabb5cc42+35
+- https://github.com/kyberdrb/gtest_example/blob/master/CMakeLists.txt#L25
+- https://github.com/kyberdrb/gtest_example/blob/master/src/CMakeLists.txt
+- https://github.com/kyberdrb/gtest_example/blob/master/tests/CMakeLists.txt
 - Links zu CMakeLists.txt Dateien von GCD, gtest_example,
 - https://github.com/google/googletest/blob/master/googletest/samples/sample10_unittest.cc
 - https://github.com/kyberdrb/GCD/blob/master/testing/tests/StringToNumberConverter/Test_StringToNumberConverter.cpp

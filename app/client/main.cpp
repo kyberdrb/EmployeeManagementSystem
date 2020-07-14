@@ -16,7 +16,7 @@ int main() {
     EmployeeDAO employeeDAO(db);
     TerminalScreen screen;
     EntryGenerator entryGenerator;
-    // entryGenerator.fillDatabaseThroughDAO(screen, employeeDAO);
+    // entryGenerator.fillDatabaseThroughDAO(screen, employeeDAO); // REFACTOR, somehow to merge duplicate code
     entryGenerator.fillDatabaseThroughDAO(employeeDAO);
 
     screen.displayOnTerminal(employeeDAO.getAllEmployeesAsText());

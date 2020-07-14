@@ -70,14 +70,28 @@ void ID_Pool::moveID_BeforeFirstGreaterElement(
 std::string ID_Pool::getEntirePoolAsText() const {
     std::stringstream output;
 
-    output << "size = " << this->poolOfIDs.size() << "\n";
+    //output << "size = " << this->poolOfIDs.size() << "\n";
 
     if (this->poolOfIDs.empty()) {
         return "Pool is empty";
     }
 
-    for (const auto& id : this->poolOfIDs) {
-        output << *id << "; ";
+    if (this->poolOfIDs.size() == 1) {
+        output << *(poolOfIDs.front());
+    }
+
+    if (this->poolOfIDs.size() >= 2) {
+        uint64_t currentElementIndex = 0;
+        const uint64_t penultimateElementIndex = this->poolOfIDs.size() - 2;
+        for (const auto& id : this->poolOfIDs) {
+            output << *id;
+
+            if (currentElementIndex <= penultimateElementIndex) {
+                output << "; ";
+            }
+
+            currentElementIndex++;
+        }
     }
 
     return output.str();
