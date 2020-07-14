@@ -14,7 +14,7 @@ Employee& EmployeeDatabase::select(std::unique_ptr<ID> employeeID) const {
             return *employee;
         }
     }
-    
+
     throw EmployeeMissingInDatabase(std::move(employeeToSearch.moveOwnershipOfID()));
 }
 
@@ -31,7 +31,7 @@ std::string EmployeeDatabase::selectAll() const {
             employee->getEmployeeID() << ";" <<
             employee->getName() << ";" <<
             employee->getDepartment() << ";" <<
-            employee->getWorking() << ";";
+            employee->getWorking();
         employeeStream << '\n';
     }
 

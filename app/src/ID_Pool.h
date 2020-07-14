@@ -31,7 +31,6 @@ private:
     void regeneratePool();
 
     const int64_t INITIAL_POOL_CAPACITY = 3;
-    int64_t lastGeneratedNumber;
-    int64_t numberOfRegenerations;
+    int64_t nextGeneratedNumber;
     std::list<std::unique_ptr<ID>> poolOfIDs;
 };

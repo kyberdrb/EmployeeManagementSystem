@@ -1,6 +1,6 @@
 file(GLOB_RECURSE source_files_unit_test
-    "src/*.h"
-    "src/*.cpp"
+    "testCases/*.h"
+    "testCases/*.cpp"
 )
 
 add_executable(unit_tests ${source_files_unit_test})

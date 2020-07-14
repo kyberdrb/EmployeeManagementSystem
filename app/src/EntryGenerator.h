@@ -9,4 +9,5 @@ class EmployeeDAO;
 class EntryGenerator {
 public:
     void fillDatabaseThroughDAO(TerminalScreen& screen, EmployeeDAO& employeeDAO);
+    void fillDatabaseThroughDAO(EmployeeDAO& employeeDAO);
 };

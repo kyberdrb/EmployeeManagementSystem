@@ -70,14 +70,28 @@ void ID_Pool::moveID_BeforeFirstGreaterElement(
 std::string ID_Pool::getEntirePoolAsText() const {
     std::stringstream output;
 
-    output << "size = " << this->poolOfIDs.size() << "\n";
+    //output << "size = " << this->poolOfIDs.size() << "\n";
 
     if (this->poolOfIDs.empty()) {
         return "Pool is empty";
     }
 
-    for (const auto& id : this->poolOfIDs) {
-        output << *id << "; ";
+    if (this->poolOfIDs.size() == 1) {
+        output << *(poolOfIDs.front());
+    }
+
+    if (this->poolOfIDs.size() >= 2) {
+        uint64_t currentElementIndex = 0;
+        const uint64_t penultimateElementIndex = this->poolOfIDs.size() - 2;
+        for (const auto& id : this->poolOfIDs) {
+            output << *id;
+
+            if (currentElementIndex <= penultimateElementIndex) {
+                output << "; ";
+            }
+
+            currentElementIndex++;
+        }
     }
 
     return output.str();
@@ -93,19 +107,19 @@ ID_Pool& ID_Pool::getInstance() {
 }
 
 ID_Pool::ID_Pool() :
-        lastGeneratedNumber(0),
-        numberOfRegenerations(0),
+        nextGeneratedNumber(0),
         poolOfIDs()
 {
     this->regeneratePool();
 }
 
 void ID_Pool::regeneratePool() {
-    this->numberOfRegenerations++;
-
-    for (int64_t idNumber = 0; idNumber < this->INITIAL_POOL_CAPACITY; ++idNumber) {
+    for (   int64_t idNumber = this->nextGeneratedNumber;
+            idNumber < this->nextGeneratedNumber + this->INITIAL_POOL_CAPACITY;
+            ++idNumber) {
         auto id = std::make_unique<ID>(idNumber);
         this->poolOfIDs.push_back(std::move(id));
-        this->lastGeneratedNumber = idNumber;
     }
+
+    this->nextGeneratedNumber += this->INITIAL_POOL_CAPACITY;
 }
