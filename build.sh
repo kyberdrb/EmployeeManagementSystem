@@ -24,7 +24,6 @@ EXECUTABLE_NAME=$(basename "$PROJECT_FULL_PATH")
 # CMake only
 cmake -DPROJECT_NAME=${EXECUTABLE_NAME} -S "$PROJECT_FULL_PATH" -B "$BUILD_DIR_FULL_PATH" # 'Generate a Project Buildsystem', i.e. initialize CMake project; this generates CMakeCache.txt file which is necessary for the 'cmake --build' command, otherwise the cmake compilation will fail
                                                                                           # - also the name of the executable in this script is passed to the cmake as the name of the project which in turn produces the executable with the same name, reducing the need for manually editing the CMakeLists.txt and automatizing and generalizing the building process for any cmake project
-
 # CMake with clang-tidy - static analysis for inspiration and safety
 # cmake -DPROJECT_NAME=${EXECUTABLE_NAME} "-DCMAKE_CXX_CLANG_TIDY=/usr/bin/clang-tidy;-checks=*;-header-filter=.*" -S "$PROJECT_FULL_PATH" -B "$BUILD_DIR_FULL_PATH"
 
@@ -51,9 +50,10 @@ if [[ "${BUILD_OPTION}" == "${PROJECT_OPTION}" ]]; then
 fi
 
 TEST_OPTION="tests/"
+LIBRARY_NAME=${EXECUTABLE_NAME}_library
 if [[ "${BUILD_OPTION}" == "${TEST_OPTION}" ]]; then
     # buildUnitTests()
-    cmake --build "${BUILD_DIR_FULL_PATH}" --target ${EXECUTABLE_NAME}_library # 'Build a library for the Project' - not necessary to be explicitely built - just for expressiveness
+    cmake --build "${BUILD_DIR_FULL_PATH}" --target ${LIBRARY_NAME} # 'Build a library for the Project' - not necessary to be explicitely built - just for expressiveness
     cmake --build "${BUILD_DIR_FULL_PATH}" --target unit_tests # 'Build a library for the Project'
 
 
@@ -64,10 +64,9 @@ if [[ "${BUILD_OPTION}" == "${TEST_OPTION}" ]]; then
     echo "==========================================="
     echo
 
-    valgrind --show-error-list=yes --leak-check=full --show-leak-kinds=all "./build/bin/unit_tests"
+    valgrind --show-error-list=yes --leak-check=full --show-leak-kinds=all "${BUILD_DIR_FULL_PATH}/bin/unit_tests"
 
-    # analyzeCodeCoverageOfUnitTests() # always run after valgrind execution because if coverage runs before valgrind,
-                                       # the coverage results show 0% coverage for every source file
+    # analyzeCodeCoverageOfUnitTests()
     echo
     echo
     echo "==========================================="
@@ -76,7 +75,14 @@ if [[ "${BUILD_OPTION}" == "${TEST_OPTION}" ]]; then
     echo
 
     rm *.gcov
-    gcov "${BUILD_DIR_FULL_PATH}"/app/CMakeFiles/${EXECUTABLE_NAME}_library.dir/src/* | grep "EmployeeManagementSystem" -A1
-    mkdir -p "${BUILD_DIR_FULL_PATH}"/gcov-unit_tests_code_coverage_results/
-    mv *.gcov "${BUILD_DIR_FULL_PATH}"/gcov-unit_tests_code_coverage_results/
+
+    GCOV_RESULTS_DIR_FULL_PATH="${BUILD_DIR_FULL_PATH}/gcov-unit_tests_code_coverage_results/"
+    rm -rf "${GCOV_RESULTS_DIR_FULL_PATH}"
+
+    COVERAGE_AND_PROFILING_FILES_DIR_FULL_PATH="${BUILD_DIR_FULL_PATH}"/app/CMakeFiles/${LIBRARY_NAME}.dir/src
+    gcov "${COVERAGE_AND_PROFILING_FILES_DIR_FULL_PATH}"/* \
+        | grep "${EXECUTABLE_NAME}" -A1 # always run after valgrind execution because if coverage runs before valgrind,
+                                        # the coverage results show 0% coverage for every source and header file
+    mkdir -p "${GCOV_RESULTS_DIR_FULL_PATH}"
+    mv *.gcov "${GCOV_RESULTS_DIR_FULL_PATH}"
 fi

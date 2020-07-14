@@ -11,11 +11,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
     -Wall -Werror -Wextra -Wpedantic \
     -Wunused-parameter -Weffc++ -Wsign-conversion -Wconversion -Wmissing-declarations \
     -fstrict-aliasing -Wstrict-aliasing \
+    -fprofile-arcs -ftest-coverage \
     -fwrapv")
 
-if(CMAKE_CXX_COMPILER_ID MATCHES GNU)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
-endif()
 message(STATUS, "CXXFLAGS: ${CMAKE_CXX_FLAGS}")
 
 include(GNUInstallDirs)
