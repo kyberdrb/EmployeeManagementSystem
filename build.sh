@@ -56,54 +56,28 @@ if [[ "${BUILD_OPTION}" == "${TEST_OPTION}" ]]; then
     cmake --build "${BUILD_DIR_FULL_PATH}" --target ${LIBRARY_NAME} # 'Build a library for the Project' - not necessary to be explicitely built - just for expressiveness
     cmake --build "${BUILD_DIR_FULL_PATH}" --target unit_tests # 'Build a library for the Project'
 
-
-    # prepareUnitTestsForCodeCoverage()
-    "${BUILD_DIR_FULL_PATH}/bin/unit_tests" > /dev/null 2>&1
-
-    # analyzeCodeCoverageOfUnitTests()
-    echo
-    echo
-    echo "==========================================="
-    echo "         UNIT-TESTS CODE COVERAGE"
-    echo "==========================================="
-    echo
-
-    rm *.gcov
-
-    GCOV_RESULTS_DIR_FULL_PATH="${BUILD_DIR_FULL_PATH}/gcov-unit_tests_code_coverage_results/"
-    rm -rf "${GCOV_RESULTS_DIR_FULL_PATH}"
-
-    COVERAGE_AND_PROFILING_FILES_DIR_FULL_PATH="${BUILD_DIR_FULL_PATH}"/app/CMakeFiles/${LIBRARY_NAME}.dir/src
-
-    # SAVE THE GCOV OUTPUT TO A FILE TO REDUCE MULTIPLE COMPUTING TIMES TO ONE; then access and grep the file, not the output
-    gcov "${COVERAGE_AND_PROFILING_FILES_DIR_FULL_PATH}"/* 2>/dev/null \
-        | grep "${EXECUTABLE_NAME}" -A1                                     # always run after execution of unit test
-                                                                            # because if coverage runs before execution of unit tests,
-                                                                            # the coverage results show 0% coverage
-                                                                            # for every source and header file
-    mkdir -p "${GCOV_RESULTS_DIR_FULL_PATH}"
-    mv *.gcov "${GCOV_RESULTS_DIR_FULL_PATH}"
-
-    # compueAggregateCodeCoverage()
-    SUM_OF_PERCENTUAL_COVERAGE=$(gcov /home/laptop/git/kyberdrb/EmployeeManagementSystem/build/app/CMakeFiles/EmployeeManagementSystem_library.dir/src/* 2>/dev/null | grep "EmployeeManagementSystem" -A1 | grep "Lines executed" | cut -d':' -f2 | cut -d'%' -f1 | awk '{ sum += $1; } END { print sum; }')
-    NUMBER_OF_SOURCE_FILES=$(gcov /home/laptop/git/kyberdrb/EmployeeManagementSystem/build/app/CMakeFiles/EmployeeManagementSystem_library.dir/src/* 2>/dev/null | grep "EmployeeManagementSystem" -A1 | grep "Lines executed" | wc -l)
-    AVERAGE_CODE_COVERAGE=$(echo "${SUM_OF_PERCENTUAL_COVERAGE} ${NUMBER_OF_SOURCE_FILES}" | awk '{printf "%.3f\n", $1/$2}')
-
-    echo
-    echo "Average code coverage: ${AVERAGE_CODE_COVERAGE} %"
-
     # analyzeUnitTestsRuntime()
-    echo
     echo
     echo "==========================================="
     echo "        UNIT-TESTS OUTPUT + MEMCHECK"
     echo "==========================================="
     echo
 
-    rm -rf "${GCOV_RESULTS_DIR_FULL_PATH}"      # DUPLICATE
+    rm *.gcov
+    rm -rf "${GCOV_RESULTS_DIR_FULL_PATH}"
 
     valgrind --show-error-list=yes --leak-check=full --show-leak-kinds=all "${BUILD_DIR_FULL_PATH}/bin/unit_tests"
 
-    mkdir -p "${GCOV_RESULTS_DIR_FULL_PATH}"    # DUPLICATE
-    mv *.gcov "${GCOV_RESULTS_DIR_FULL_PATH}"   # DUPLICATE
+    # computeAggregateCodeCoverage()
+    GCOV_RESULTS_DIR_FULL_PATH="${BUILD_DIR_FULL_PATH}/gcov-unit_tests_code_coverage_results/"
+    COVERAGE_AND_PROFILING_FILES_DIR_FULL_PATH="${BUILD_DIR_FULL_PATH}"/app/CMakeFiles/${LIBRARY_NAME}.dir/src
+    SUM_OF_PERCENTUAL_COVERAGE=$(gcov ${COVERAGE_AND_PROFILING_FILES_DIR_FULL_PATH}/* 2>/dev/null | grep "${EXECUTABLE_NAME}" -A1 | grep "Lines executed" | cut -d':' -f2 | cut -d'%' -f1 | awk '{ sum += $1; } END { print sum; }')
+    NUMBER_OF_SOURCE_FILES=$(gcov ${COVERAGE_AND_PROFILING_FILES_DIR_FULL_PATH}/* 2>/dev/null | grep "${EXECUTABLE_NAME}" -A1 | grep "Lines executed" | wc -l)
+    AVERAGE_CODE_COVERAGE=$(echo "${SUM_OF_PERCENTUAL_COVERAGE} ${NUMBER_OF_SOURCE_FILES}" | awk '{printf "%.3f\n", $1/$2}')
+
+    echo
+    echo "Average code coverage: ${AVERAGE_CODE_COVERAGE} %"
+
+    mkdir -p "${GCOV_RESULTS_DIR_FULL_PATH}"
+    mv *.gcov "${GCOV_RESULTS_DIR_FULL_PATH}"
 fi

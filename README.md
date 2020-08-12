@@ -22,3 +22,6 @@
 - https://github.com/kyberdrb/GCD/blob/master/testing/tests/StringToNumberConverter/Test_StringToNumberConverter.cpp
 - https://github.com/kyberdrb/GCD/blob/master/gcd.cpp
 - https://github.com/kyberdrb/gtest_example/blob/master/tests/ExampleTestSuite.cpp
+- https://en.wikipedia.org/wiki/Gcov
+- https://jhbell.com/using-cmake-and-gcov
+- https://users.suse.com/~mliska/lcov/gcc/gcov.c.gcov.html
