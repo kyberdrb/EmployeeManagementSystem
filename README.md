@@ -1,5 +1,9 @@
 # EmployeeManagementSystem
 
+Implementation of a `Pool` design pattern in modern C++
+* smart pointers: `std::unique_ptr`
+* STL: `std::vector`
+
 ## Dependencies
 
 - `gtest`
